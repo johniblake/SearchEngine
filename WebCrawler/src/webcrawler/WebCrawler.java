@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package webcrawler;
 
 import crawlerdata.*;
@@ -11,7 +7,7 @@ import org.jsoup.nodes.Element;
 import webobjects.*;
 
 /**
- *
+ * Each instance of this class is a web client that downloads web pages and stores them in the WebPageRepository.
  * @author johnblake
  */
 public class WebCrawler {
@@ -19,7 +15,12 @@ public class WebCrawler {
     private static FrontierQueue fq;
     private static FrontierList fd;
     
-    
+    /**
+     * Initializes the crawl by downloading the first page and gathering a list of its child links.
+     * @param seed String that represents the URL of the page from which the Crawler will begin its crawl.
+     * @return WebPage 
+     * @throws Exception 
+     */
     public static WebPage initialize(String seed) throws Exception{
         Domain domain = new Domain(seed);
         Anchor anchor;
