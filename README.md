@@ -57,3 +57,5 @@ Links Database: Redis
   http://lucene.apache.org/solr/features.html
  
  
+ UI will be implemented using basic html and the Solr library
+ 
