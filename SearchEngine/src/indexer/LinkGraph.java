@@ -10,14 +10,14 @@ package indexer;
  * PageRank
  * @author johnblake
  */
-public class LinkServer {
+public class LinkGraph {
     
     //Database database;
     
     /**
      * empty constructor
      */
-    public LinkServer(){
+    public LinkGraph(){
         //create new database
     }
     

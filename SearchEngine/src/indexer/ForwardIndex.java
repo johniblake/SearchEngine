@@ -15,8 +15,8 @@ import webpage.WebPage;
  * where Compressed packet is in the format (docID,ecode,URLLength,URL,pageHTML)
  * @author johnblake
  */
-public class StoreServer {
-    public StoreServer(){
+public class ForwardIndex {
+    public ForwardIndex(){
         
     }
     

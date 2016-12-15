@@ -3,8 +3,8 @@ package webcrawler;
 
 import webpage.URL;
 import fetcher.WebPageFetcher;
-import indexer.StoreServer;
-import frontier.URLServer;
+import indexer.ForwardIndex;
+import frontier.FrontierQueue;
 import java.util.*;
 import java.io.IOException;
 import org.jsoup.nodes.Document;
@@ -27,8 +27,8 @@ public class WebCrawler implements Runnable {
     protected Thread thread;
     protected WebCrawlerController crawlerController;
     protected WebPageFetcher fetcher;
-    protected StoreServer docStoreServer;
-    private URLServer URLServer;
+    protected ForwardIndex docStoreServer;
+    private FrontierQueue URLServer;
     
     public void init(int id, WebCrawlerController crawlerController) throws IOException {
         this.myId = id;
@@ -42,9 +42,9 @@ public class WebCrawler implements Runnable {
     }
     
     /**
-     * Download webpage and use the StoreServer to store its contents to the repository
-     * use DocIDServer to check for the child links' existence in the docID DB
-     * and add them to the frontier if they have not been seen.
+     * Download webpage and use the ForwardIndex to store its contents to the repository
+ use DocIDServer to check for the child links' existence in the docID DB
+ and add them to the frontier if they have not been seen.
      * @param crawlerName
      * @param pageURL
      * @throws IOException
@@ -63,7 +63,7 @@ public class WebCrawler implements Runnable {
     }
     
     /**
-     * Use StoreServer to save webpage to the repository as a (docID,document) pair 
+     * Use ForwardIndex to save webpage to the repository as a (docID,document) pair 
      * @param links 
      */
     public void addPageToRepository(WebPage page){

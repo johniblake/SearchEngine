@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import fetcher.WebPageFetcher;
-import indexer.StoreServer;
-import frontier.URLServer;
+import indexer.ForwardIndex;
+import frontier.FrontierQueue;
 import indexer.DocIDServer;
-import indexer.LinkServer;
+import indexer.LinkGraph;
 
 
 /**
@@ -26,10 +26,10 @@ public class WebCrawlerController {
     protected WebPageFetcher fetcher;
     protected boolean finished;
     protected boolean shuttingDown;
-    protected URLServer urlServer;
-    protected StoreServer storeServer;
+    protected FrontierQueue urlServer;
+    protected ForwardIndex storeServer;
     protected DocIDServer docIDServer;
-    protected LinkServer linkServer;
+    protected LinkGraph linkServer;
 
     /**
      * Creates a crawling session and provides crawler threads a queue of urls
@@ -41,17 +41,17 @@ public class WebCrawlerController {
     public WebCrawlerController() throws IOException{
         this.finished = false;
         this.shuttingDown = false;
-        this.storeServer = new StoreServer();
-        this.urlServer = new URLServer();
+        this.storeServer = new ForwardIndex();
+        this.urlServer = new FrontierQueue();
         this.docIDServer = new DocIDServer();
-        this.linkServer = new LinkServer();
+        this.linkServer = new LinkGraph();
     }
     
-    public StoreServer getStoreServer(){
+    public ForwardIndex getStoreServer(){
         return this.storeServer;
     }
     
-    public URLServer getURLServer(){
+    public FrontierQueue getURLServer(){
         return this.urlServer;
     }
     
@@ -59,7 +59,7 @@ public class WebCrawlerController {
         return this.docIDServer;
     }
     
-    public LinkServer getLinkServer(){
+    public LinkGraph getLinkServer(){
         return this.linkServer;
     }
 

@@ -45,7 +45,7 @@ public class DocIDServer {
      * @param url
      * @param docID 
      */
-    public void addEntry(String url, int docID){
+    private void addEntry(String url, int docID){
         
     }
     

@@ -11,13 +11,13 @@ import webpage.URL;
  * Manages the priority queue of URLs to be crawled
  * @author johnblake
  */
-public class URLServer {
+public class FrontierQueue {
     //RedisPriorityQueue queue;
     
     /**
      * empty constructor
      */
-    public URLServer(){
+    public FrontierQueue(){
         
     }
     
