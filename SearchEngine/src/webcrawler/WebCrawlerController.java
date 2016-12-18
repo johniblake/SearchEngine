@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import fetcher.WebPageFetcher;
 import indexer.ForwardIndex;
 import frontier.FrontierQueue;
-import indexer.DocIDServer;
+import indexer.DocIndex;
 import indexer.LinkGraph;
 
 
@@ -28,7 +28,7 @@ public class WebCrawlerController {
     protected boolean shuttingDown;
     protected FrontierQueue urlServer;
     protected ForwardIndex storeServer;
-    protected DocIDServer docIDServer;
+    protected DocIndex docIDServer;
     protected LinkGraph linkServer;
 
     /**
@@ -43,7 +43,7 @@ public class WebCrawlerController {
         this.shuttingDown = false;
         this.storeServer = new ForwardIndex();
         this.urlServer = new FrontierQueue();
-        this.docIDServer = new DocIDServer();
+        this.docIDServer = new DocIndex();
         this.linkServer = new LinkGraph();
     }
     
@@ -55,7 +55,7 @@ public class WebCrawlerController {
         return this.urlServer;
     }
     
-    public DocIDServer getDocIDServer(){
+    public DocIndex getDocIDServer(){
         return this.docIDServer;
     }
     

@@ -23,7 +23,7 @@ public class WebPage {
     /**
      * Status of the page
      */
-    protected int statusCode;
+//    protected int statusCode;
 
     /**
      * The ContentType of this page.
@@ -46,18 +46,19 @@ public class WebPage {
      * URLs found on this webpage
      */
     protected Elements links;
+    
 
-    public WebPage(URL url) {
-        this.url = url;
+    public WebPage() {
+  
     }
 
     public URL getUrl() {
         return url;
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
+//    public int getStatusCode() {
+//        return statusCode;
+//    }
 
     public String getContentType() {
         return contentType;
@@ -79,9 +80,9 @@ public class WebPage {
         this.url = url;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
+//    public void setStatusCode(int statusCode) {
+//        this.statusCode = statusCode;
+//    }
 
     public void setContentType(String contentType) {
         this.contentType = contentType;

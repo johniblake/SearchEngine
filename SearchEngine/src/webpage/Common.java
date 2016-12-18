@@ -8,7 +8,7 @@ package webpage;
 import java.sql.Timestamp;
 
 /**
- *
+ * A class containing methods commonly used by many other classes
  * @author johnblake
  */
 public class Common {

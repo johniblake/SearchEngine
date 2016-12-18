@@ -8,8 +8,8 @@ import frontier.FrontierQueue;
 import java.util.*;
 import java.io.IOException;
 import org.jsoup.nodes.Document;
-import parser.WebPageParser;
 import webpage.WebPage;
+import webpage.WebPageFactory;
 
 /**
  * Each instance of this class is a web client that downloads web pages and stores them in the WebPageRepository.
@@ -51,8 +51,7 @@ public class WebCrawler implements Runnable {
      * @throws Exception 
      */
     public void crawlPage(String crawlerName, URL pageURL) throws IOException, Exception{
-        Document htmlDocument = this.fetcher.fetchPage(pageURL);
-        WebPage webPage = WebPageParser.parseWebPage(pageURL, htmlDocument);
+        WebPage webPage = WebPageFactory.create(pageURL);
         addPageToRepository(webPage);
         //send all URLs from webPage to docIDServer to add them to the anchors index/further process
 //        Elements relativeLinks = webPage.getLinks();

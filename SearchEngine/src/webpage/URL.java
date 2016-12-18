@@ -20,7 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- *
+ * A container class for a URL which contains the string URL and its metadata
  * @author johnblake
  */
 public class URL {

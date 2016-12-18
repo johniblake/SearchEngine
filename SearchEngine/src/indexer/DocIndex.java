@@ -9,14 +9,14 @@ package indexer;
  * This class manages the docID database (document index)
  * @author johnblake
  */
-public class DocIDServer {
+public class DocIndex {
     //private final Database docIDsDB;
     private int lastDocID;
     
     /**
      * Empty constructor
      */
-    public DocIDServer(){
+    public DocIndex(){
         lastDocID = 0;
     }
     
