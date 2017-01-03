@@ -1,0 +1,30 @@
+Implementation Schedule
+Draft, 19 Dec 2016
+
+1.	Crawler Data Structures
+    a.	Frontier priority queue. Test that this is working using JUnit tests to test get/set methods ensuring that the queue does indeed return the highest priority item.
+    b.	Document Index – Implement all methods and use JUnit testing to test that getDocID() and getNewDocID() output the proper ID given certain constraints (i.e. depending on if the docID is present or what the last created docID was)
+    c.	Link Graph – test by printing out the graph after an insertion 
+    d.	Forward Index – test by printing out the table after an insertion (eventually making JUnit tests once the output format is better understood)
+
+2.	Multithreaded Crawler
+    a.	Implement WebCrawler.java, connecting it to all data structures by the addTo_____() methods. 
+    b.	Implement WebCrawlerController.java which contains the main method. 
+    c.	JUnit Test by setting up a crawl session and testing the output of the various data structures at certain intervals
+
+3.	PageRank
+    a.	Add a method to the link graph that recurses over the link graph and maintains rank counters. 
+    b.	Write getRank method 
+    c.	Test with small set of pages, printing the scores of the pages after each pass.
+
+4.	Inverted Index
+    a.	Write Inverted Index class for interacting with the database and getter/setter methods. 
+    b.	Write the Lexicon class – test with JUnit tests on getters/setters.
+    c.	Write Parser that grabs pages from the forward index and emits word, docID pairs (inserting them into inverted index).
+    d.	Test with one document, printing the resulting table. Then test with a small collection of documents. 
+
+5.	Search 
+    a.	Write the backend first – including the methods that do the search on the inverted index and combine the results with the information from the PageRank method to build a final sorted list of results.
+    b.	Look into the ‘accumulators’ approach to determining page relevance, and do any implementation necessary here. This will probably include writing a new ‘Accumulator’ class that is essentially a counter with some additional fields.
+    c.	Write UI
+    d.	Test Back End with appropriate JUnit tests, and test the UI by trial and error and finally by use of the finished product.
