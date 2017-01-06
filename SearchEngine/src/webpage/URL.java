@@ -33,7 +33,7 @@ public class URL {
     private String subDomain;
     private String path;
     private String anchorText;
-    private byte priority;
+    private double priority;
     private String tag;
 
     public String getURL() {
@@ -108,11 +108,11 @@ public class URL {
         this.anchorText = anchorText;
     }
 
-    public byte getPriority() {
+    public double getPriority() {
         return priority;
     }
     
-    public void setPriority(byte priority) {
+    public void setPriority(double priority) {
         this.priority = priority;
     }
 
