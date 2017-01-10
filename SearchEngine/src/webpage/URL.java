@@ -112,6 +112,7 @@ public class URL {
         return priority;
     }
     
+    
     public void setPriority(double priority) {
         this.priority = priority;
     }

@@ -20,8 +20,8 @@ public class FrontierQueue {
      * empty constructor
      */
     public FrontierQueue(){
-        queue = new Jedis("localhost");
-        System.out.println("Connected to server successfully");
+        queue = new Jedis("localhost",6379);
+        System.out.println("Connected to Frontier Queue server successfully");
         System.out.println("Server is running:" + queue.ping());
     }
     

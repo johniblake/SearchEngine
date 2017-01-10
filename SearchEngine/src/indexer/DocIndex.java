@@ -5,19 +5,29 @@
  */
 package indexer;
 
+import redis.clients.jedis.Jedis;
+
 /**
- * This class manages the docID database (document index)
+ * This class manages the document index database. The document index keeps track
+ * of which urls have been seen by the crawlers, and assigns all new urls a unique ID.
  * @author johnblake
  */
-public class DocIndex {
-    //private final Database docIDsDB;
+public class DocIndex { 
+    private final Jedis docIDsDB;
     private int lastDocID;
+    
+    // anytime the database creates a new ID, this lock must be acquired to avoid
+    // creating the same ID in two different threads.
+    private static final Object idLock = new Object();
     
     /**
      * Empty constructor
      */
     public DocIndex(){
         lastDocID = 0;
+        docIDsDB = new Jedis("localhost",6380);
+        System.out.println("Connected to Document Index server successfully");
+        System.out.println("Server is running:" + docIDsDB.ping());
     }
     
     /**
@@ -27,6 +37,17 @@ public class DocIndex {
      */
     public int getDocID(String url){
         int docID = -1;
+        String serverResponse;
+        serverResponse = docIDsDB.get(url);
+        try{
+            if (!serverResponse.equals("null")){
+                //System.out.println("docID exists!");
+                docID = Integer.parseInt(serverResponse);
+                return docID;
+            }
+        }catch(NullPointerException n){
+            //System.out.println("docID does not exist");
+        }
         return docID;
     }
     
@@ -37,17 +58,50 @@ public class DocIndex {
      * @return 
      */
     public int getNewDocID(String url){
-        return 0;
+        int docID;
+        String response = docIDsDB.get(url);
+        System.out.println(response);
+        docID = getDocID(url);
+        if (docID == -1){
+           synchronized(idLock){
+                ++lastDocID;
+                return lastDocID;
+            } 
+        }
+        return docID;
     }
     
     /**
-     * add entry to docID database if none exists
+     * add entry to docID database if none exists. This method is to be used
+     * on startup when adding the seed urls to the frontier queue.
      * @param url
      * @param docID 
      */
-    private void addEntry(String url, int docID){
-        
+    public void addEntry(String url, int docID){
+        int prevDocID = getDocID(url);
+        if (prevDocID >= 0){
+            if (prevDocID == docID){
+                return;
+            }
+        }
+        synchronized(idLock){
+            if (docID < lastDocID){
+                return;
+            }
+            docIDsDB.set(url, Integer.toString(docID));
+            lastDocID = docID;
+        }
     }
+    /**
+     * add entry to docID database if none exists.
+     * @param url 
+     */
+    public void addEntry(String url){
+        int docID = getNewDocID(url);
+        docIDsDB.set(url, Integer.toString(docID));
+    }
+    
+    
     
     /**
      * checks if a url has been crawled
@@ -56,6 +110,10 @@ public class DocIndex {
      */
     public boolean isSeen(String url){
         return getDocID(url) != -1;
+    }
+    
+    public void flush(){
+        docIDsDB.flushAll();
     }
     
 }
