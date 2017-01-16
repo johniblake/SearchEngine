@@ -36,7 +36,8 @@ public class DocIndex {
      * @return docID associated with a given url
      */
     public int getDocID(String url){
-        int docID = -1;
+        synchronized(idLock){
+            int docID = -1;
         String serverResponse;
         serverResponse = docIDsDB.get(url);
         try{
@@ -49,6 +50,7 @@ public class DocIndex {
             //System.out.println("docID does not exist");
         }
         return docID;
+        }
     }
     
     /**
@@ -58,17 +60,17 @@ public class DocIndex {
      * @return 
      */
     public int getNewDocID(String url){
-        int docID;
-        String response = docIDsDB.get(url);
-        System.out.println(response);
-        docID = getDocID(url);
-        if (docID == -1){
-           synchronized(idLock){
+        synchronized(idLock){
+            int docID;
+            String response = docIDsDB.get(url);
+            System.out.println(response);
+            docID = getDocID(url);
+            if (docID == -1){
                 ++lastDocID;
                 return lastDocID;
-            } 
+            }
+            return docID;
         }
-        return docID;
     }
     
     /**
@@ -98,7 +100,9 @@ public class DocIndex {
      */
     public void addEntry(String url){
         int docID = getNewDocID(url);
-        docIDsDB.set(url, Integer.toString(docID));
+        synchronized(idLock){
+            docIDsDB.set(url, Integer.toString(docID));
+        }
     }
     
     
@@ -113,7 +117,9 @@ public class DocIndex {
     }
     
     public void flush(){
-        docIDsDB.flushAll();
+        synchronized(idLock){
+            docIDsDB.flushAll();
+        }
     }
     
 }

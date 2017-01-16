@@ -26,7 +26,7 @@ public class WebCrawlerController {
     protected WebPageFetcher fetcher;
     protected boolean finished;
     protected boolean shuttingDown;
-    protected FrontierQueue urlServer;
+    protected FrontierQueue frontier;
     protected ForwardIndex storeServer;
     protected DocIndex docIDServer;
     protected LinkGraph linkServer;
@@ -42,7 +42,7 @@ public class WebCrawlerController {
         this.finished = false;
         this.shuttingDown = false;
         this.storeServer = new ForwardIndex();
-        this.urlServer = new FrontierQueue();
+        this.frontier = new FrontierQueue();
         this.docIDServer = new DocIndex();
         this.linkServer = new LinkGraph();
     }
@@ -51,8 +51,8 @@ public class WebCrawlerController {
         return this.storeServer;
     }
     
-    public FrontierQueue getURLServer(){
-        return this.urlServer;
+    public FrontierQueue getFrontierQueue(){
+        return this.frontier;
     }
     
     public DocIndex getDocIDServer(){
@@ -120,8 +120,10 @@ public class WebCrawlerController {
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-//        int numThreads = 8;
-//        WebCrawlerController controller = new WebCrawlerController();
-//        controller.start(8);
+        int numThreads = 2;
+        WebCrawlerController controller = new WebCrawlerController();
+        controller.start(2);
     }
+
+    
 }

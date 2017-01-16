@@ -14,7 +14,8 @@ import redis.clients.jedis.Jedis;
  * @author johnblake
  */
 public class FrontierQueue {
-    Jedis queue;
+    private final Jedis queue;
+    private static final Object frontierLock = new Object();
     
     /**
      * empty constructor
@@ -32,7 +33,9 @@ public class FrontierQueue {
     public void addURL(URL url){
         String link = url.getURL();
         double score = url.getPriority();
-        queue.zadd("frontier", score, link);
+        synchronized(frontierLock){
+            queue.zadd("frontier", score, link);
+        }
     }
     
     /**
@@ -41,8 +44,11 @@ public class FrontierQueue {
      */
     public URL getNext(){
         URL url = new URL();
-        Set<String> links = queue.zrange("frontier", 0, 0);
-        queue.zremrangeByRank("frontier", 0, 0);
+        Set<String> links;
+        synchronized(frontierLock){
+            links = queue.zrange("frontier", 0, 0);
+            queue.zremrangeByRank("frontier", 0, 0);
+        }
         for (String link:links){
             System.out.println(link);
             url.setURL(link);

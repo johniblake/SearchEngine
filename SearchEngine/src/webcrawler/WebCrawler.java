@@ -5,9 +5,12 @@ import webpage.URL;
 import fetcher.WebPageFetcher;
 import indexer.ForwardIndex;
 import frontier.FrontierQueue;
+import indexer.DocIndex;
 import java.util.*;
 import java.io.IOException;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import webpage.WebPage;
 import webpage.WebPageFactory;
 
@@ -28,14 +31,16 @@ public class WebCrawler implements Runnable {
     protected WebCrawlerController crawlerController;
     protected WebPageFetcher fetcher;
     protected ForwardIndex docStoreServer;
-    private FrontierQueue URLServer;
+    protected DocIndex docIndex;
+    private FrontierQueue frontier;
     
     public void init(int id, WebCrawlerController crawlerController) throws IOException {
         this.myId = id;
         this.crawlerController = crawlerController;
         this.fetcher = new WebPageFetcher();
         this.docStoreServer = crawlerController.getStoreServer();
-        this.URLServer = crawlerController.getURLServer();
+        this.frontier = crawlerController.getFrontierQueue();
+        this.docIndex = crawlerController.getDocIDServer();
     }
     public void setThread(Thread thread){
         this.thread = thread;
@@ -54,11 +59,31 @@ public class WebCrawler implements Runnable {
         WebPage webPage = WebPageFactory.create(pageURL);
         addPageToRepository(webPage);
         //send all URLs from webPage to docIDServer to add them to the anchors index/further process
-//        Elements relativeLinks = webPage.getLinks();
-//        ArrayList<String> links = new ArrayList<String>();
-//        for (Element e:relativeLinks){
-//            links.add(e.attr("abs:href"));
-//        }
+        Elements relativeLinks = webPage.getLinks();
+        ArrayList<String> links = new ArrayList<String>();
+        for (Element e:relativeLinks){
+            links.add(e.attr("abs:href"));
+        }
+        int parentID = docIndex.getDocID(pageURL.getURL());
+        while (links.size() > 0){
+            String curURL = links.get(0);
+            URL childURL = null;
+            childURL.setURL(curURL);
+            //set priority
+            childURL.setPriority((double)-1);
+            if (docIndex.isSeen(curURL)){
+                // get url's id
+                int childID = docIndex.getDocID(curURL);
+                // add to link graph with update parent info
+                
+            }else{
+                docIndex.addEntry(curURL);
+                int childID = docIndex.getDocID(curURL);
+                //add to link graph with updated parent info
+                //add child url to frontier
+                frontier.addURL(pageURL);
+            }
+        }
     }
     
     /**
