@@ -38,6 +38,7 @@ public class LinkGraphUT {
     
     @After
     public void tearDown() {
+        linkGraph.shutDown();
     }
 
     // TODO add test methods here.
@@ -45,7 +46,7 @@ public class LinkGraphUT {
     //
      @Test
      public void LinkGraphTest() {
-         linkGraph.addLink(0, 0);
+         linkGraph.addLink(0, 1337);
          assertEquals(0,0);
      }
 }
