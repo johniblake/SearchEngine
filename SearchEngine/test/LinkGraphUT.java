@@ -46,7 +46,7 @@ public class LinkGraphUT {
     //
      @Test
      public void LinkGraphTest() {
-         //linkGraph.addLink(0, 1337);
+         linkGraph.addLink(0, 1337);
          assertEquals(0,0);
      }
 }
