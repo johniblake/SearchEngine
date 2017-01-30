@@ -4,27 +4,26 @@
  * and open the template in the editor.
  */
 
-import indexer.LinkGraph;
+import indexer.ForwardIndex;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import webpage.WebPage;
 
 /**
  *
  * @author johnblake
  */
-public class LinkGraphUT {
-    LinkGraph linkGraph;
+public class ForwardIndexUT {
     
-    public LinkGraphUT() {
+    public ForwardIndexUT() {
     }
     
     @BeforeClass
     public static void setUpClass() {
-        
     }
     
     @AfterClass
@@ -33,20 +32,21 @@ public class LinkGraphUT {
     
     @Before
     public void setUp() {
-        linkGraph = new LinkGraph();
     }
     
     @After
     public void tearDown() {
-        linkGraph.shutDown();
     }
 
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void LinkGraphTest() {
-         //linkGraph.addLink(0, 1337);
-         assertEquals(0,0);
+     public void emptyTest() {
+        ForwardIndex fi = new ForwardIndex();
+        WebPage webpage = new WebPage();
+        webpage.setBody("This is the text of the body!");
+        fi.addDocumentToDB(webpage, 94);
+        assertEquals(0,0);
      }
 }
