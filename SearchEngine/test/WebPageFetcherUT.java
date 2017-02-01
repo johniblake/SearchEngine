@@ -4,22 +4,24 @@
  * and open the template in the editor.
  */
 
-import java.io.IOException;
+import fetcher.WebPageFetcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import webcrawler.WebCrawlerController;
+import webpage.URL;
+import webpage.WebPage;
+import webpage.WebPageFactory;
 
 /**
  *
  * @author johnblake
  */
-public class WebCrawlerControllerUT {
-    
-    public WebCrawlerControllerUT() {
+public class WebPageFetcherUT {
+    WebPageFactory pageFactory;
+    public WebPageFetcherUT() {
     }
     
     @BeforeClass
@@ -31,8 +33,8 @@ public class WebCrawlerControllerUT {
     }
     
     @Before
-    public void setUp() throws IOException {
-        WebCrawlerController crawlerController = new WebCrawlerController();
+    public void setUp() {
+        pageFactory = new WebPageFactory();
     }
     
     @After
@@ -43,12 +45,12 @@ public class WebCrawlerControllerUT {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void testCrawler() throws InterruptedException, IOException {
-        int numThreads = 4;
-        WebCrawlerController controller = new WebCrawlerController();
-        controller.addSeed("https://moz.com/top500", -1);
-        controller.start(4);
-        Thread.sleep(30000);
-        controller.shutdown();
+     public void webPageFetcherUT() throws Exception {
+        URL url = new URL();
+        url.setURL("https://moz.com/top500");
+        WebPage page = pageFactory.create(url);
+        System.out.println(page.getBody());
+        assertEquals(0,0);
      }
+     
 }

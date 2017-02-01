@@ -35,6 +35,16 @@ public class WebPageFactory {
         String contentType = response.contentType(); 
         Document webDocument = response.parse();
         Elements links = webDocument.select("a[href]");
+        Elements filteredLinks = new Elements();
+//        for (Element link: links){
+//            System.out.println("Checking if link matches...");
+//            if (link.attr("abs:href").matches("(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))")){
+//                filteredLinks.add(link);
+//            }else{
+//                System.out.println("Link did not match!");
+//                System.out.println("Link: "+link.attr("abs:href"));
+//            }
+//        }
         Element body = webDocument.body();
         webPage.setLinks(links);
         webPage.setBody(body.text());

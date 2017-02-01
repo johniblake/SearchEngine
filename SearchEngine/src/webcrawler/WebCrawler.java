@@ -6,8 +6,11 @@ import fetcher.WebPageFetcher;
 import indexer.ForwardIndex;
 import frontier.FrontierQueue;
 import indexer.DocIndex;
+import indexer.LinkGraph;
 import java.util.*;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,17 +33,22 @@ public class WebCrawler implements Runnable {
     protected Thread thread;
     protected WebCrawlerController crawlerController;
     protected WebPageFetcher fetcher;
-    protected ForwardIndex docStoreServer;
+    protected ForwardIndex forwardIndex;
     protected DocIndex docIndex;
     private FrontierQueue frontier;
+    protected LinkGraph linkGraph;
+    protected boolean isWaitingForNewURLs;
     
     public void init(int id, WebCrawlerController crawlerController) throws IOException {
         this.myId = id;
         this.crawlerController = crawlerController;
         this.fetcher = new WebPageFetcher();
-        this.docStoreServer = crawlerController.getStoreServer();
+        this.forwardIndex = crawlerController.getForwardIndex();
         this.frontier = crawlerController.getFrontierQueue();
-        this.docIndex = crawlerController.getDocIDServer();
+        this.linkGraph = crawlerController.getLinkGraph();
+        this.docIndex = crawlerController.getDocIndex();
+        this.isWaitingForNewURLs = false;
+        
     }
     public void setThread(Thread thread){
         this.thread = thread;
@@ -57,41 +65,54 @@ public class WebCrawler implements Runnable {
      */
     public void crawlPage(String crawlerName, URL pageURL) throws IOException, Exception{
         WebPage webPage = WebPageFactory.create(pageURL);
-        addPageToRepository(webPage);
+        String parentURL = pageURL.getURL();
+        int parentID = docIndex.getDocID(parentURL);
+        if (parentID == -1){
+            parentID = docIndex.getNewDocID(parentURL);
+            docIndex.addEntry(parentURL, parentID);
+        }
+        
         //send all URLs from webPage to docIDServer to add them to the anchors index/further process
         Elements relativeLinks = webPage.getLinks();
         ArrayList<String> links = new ArrayList<String>();
         for (Element e:relativeLinks){
+            System.out.println("Found Link: " + e.attr("abs:href"));
             links.add(e.attr("abs:href"));
-        }
-        int parentID = docIndex.getDocID(pageURL.getURL());
+        }   
         while (links.size() > 0){
-            String curURL = links.get(0);
-            URL childURL = null;
+            String curURL = links.remove(0);
+            URL childURL = new URL();
             childURL.setURL(curURL);
-            //set priority
-            childURL.setPriority((double)-1);
+            //set priority - random for now.
+            childURL.setPriority(new Random().nextInt(10));
             if (docIndex.isSeen(curURL)){
                 // get url's id
+                System.err.println("Have seen " + curURL);
                 int childID = docIndex.getDocID(curURL);
-                // add to link graph with update parent info
+                addLinkToGraph(parentID, childID);
+                
                 
             }else{
                 docIndex.addEntry(curURL);
                 int childID = docIndex.getDocID(curURL);
+                childURL.setParentDocid(parentID);
+                childURL.setDocid(childID);
                 //add to link graph with updated parent info
+                addLinkToGraph(parentID, childID);
                 //add child url to frontier
-                frontier.addURL(pageURL);
+                frontier.addURL(childURL);
             }
         }
+        addPageToRepository(webPage, parentID);
     }
     
     /**
      * Use ForwardIndex to save webpage to the repository as a (docID,document) pair 
      * @param links 
      */
-    public void addPageToRepository(WebPage page){
-        //queue jobs
+    public void addPageToRepository(WebPage page, int docID){
+        
+        forwardIndex.addDocumentToDB(page, docID);
     }
     
     /**
@@ -100,7 +121,7 @@ public class WebCrawler implements Runnable {
      * @param url 
      */
     public void addURLToFrontier(URL url){
-        
+        frontier.addURL(url);
     }
     
     /**
@@ -108,8 +129,8 @@ public class WebCrawler implements Runnable {
      * @param curURL
      * @param childURL 
      */
-    public void addLinkToGraph(URL curURL, URL childURL){
-        
+    public void addLinkToGraph(int parentID, int childID){
+        linkGraph.addLink(parentID, childID);
     }
 
     /**
@@ -117,6 +138,29 @@ public class WebCrawler implements Runnable {
      */
     @Override
     public void run() {
-        
+        while (true) {
+            //List<URL> assignedURLs = new ArrayList<>(50);
+            isWaitingForNewURLs = true;
+            if (frontier.getQueueLength() > 0){
+                URL curURL = frontier.getNext();
+                System.out.println("Current URL: " + curURL.getURL());
+                isWaitingForNewURLs = false;
+
+                if (crawlerController.isShuttingDown()) {
+                    System.out.println("Exiting because of controller shutdown.");
+                    return;
+                }
+                //if (curURL != null) {
+                try {
+                    crawlPage(thread.getName(),curURL);
+                } catch (Exception ex) {
+                    continue;
+//                        System.err.println("Thread " + thread.getName() + " encuntered an error crawling page " + curURL + ".");
+//                        Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //}
+            }
+            
+        }
     }
 }

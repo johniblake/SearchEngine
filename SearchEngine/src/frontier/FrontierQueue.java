@@ -16,6 +16,8 @@ import redis.clients.jedis.Jedis;
 public class FrontierQueue {
     private final Jedis queue;
     private static final Object frontierLock = new Object();
+    private static long queueLength;
+    private static boolean isFinished;
     
     /**
      * empty constructor
@@ -24,6 +26,8 @@ public class FrontierQueue {
         queue = new Jedis("localhost",6379);
         System.out.println("Connected to Frontier Queue server successfully");
         System.out.println("Server is running:" + queue.ping());
+        this.queueLength = 0;
+        isFinished = false;
     }
     
     /**
@@ -35,6 +39,7 @@ public class FrontierQueue {
         double score = url.getPriority();
         synchronized(frontierLock){
             queue.zadd("frontier", score, link);
+            queueLength++;
         }
     }
     
@@ -48,13 +53,30 @@ public class FrontierQueue {
         synchronized(frontierLock){
             links = queue.zrange("frontier", 0, 0);
             queue.zremrangeByRank("frontier", 0, 0);
+            queueLength--;
         }
         for (String link:links){
-            System.out.println(link);
+            System.out.println("Got link: " + link);
             url.setURL(link);
         }
-        //do I need docID at this point?
-        url.setDocid(0);
         return url;
+    }
+    
+    public long getQueueLength(){
+        return queueLength;
+    }
+    
+    public boolean isFinished(){
+        return isFinished;
+    }
+        
+    public void finish(){
+        synchronized(frontierLock){
+            isFinished = true;
+        }
+    }
+    
+    public void close(){
+        queue.close();
     }
 }

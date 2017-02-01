@@ -122,4 +122,7 @@ public class DocIndex {
         }
     }
     
+    public void close(){
+        docIDsDB.close();
+    }
 }

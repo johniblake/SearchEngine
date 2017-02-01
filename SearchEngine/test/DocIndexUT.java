@@ -44,8 +44,8 @@ public class DocIndexUT {
     //
     @Test
     public void addEntryTest() {
-        String url = "www.facebook.com";
-        String url2 = "www.google.com";
+        String url = "https://www.facebook.com";
+        String url2 = "https://www.google.com";
         int id = 0;
         docIndex.addEntry(url,id);
         docIndex.addEntry(url2);

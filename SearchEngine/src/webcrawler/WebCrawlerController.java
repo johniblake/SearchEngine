@@ -14,6 +14,7 @@ import indexer.ForwardIndex;
 import frontier.FrontierQueue;
 import indexer.DocIndex;
 import indexer.LinkGraph;
+import webpage.URL;
 
 
 /**
@@ -27,9 +28,10 @@ public class WebCrawlerController {
     protected boolean finished;
     protected boolean shuttingDown;
     protected FrontierQueue frontier;
-    protected ForwardIndex storeServer;
-    protected DocIndex docIDServer;
-    protected LinkGraph linkServer;
+    protected ForwardIndex forwardIndex;
+    protected DocIndex docIndex;
+    protected LinkGraph linkGraph;
+    protected static final Object waitingLock = new Object();
 
     /**
      * Creates a crawling session and provides crawler threads a queue of urls
@@ -41,26 +43,28 @@ public class WebCrawlerController {
     public WebCrawlerController() throws IOException{
         this.finished = false;
         this.shuttingDown = false;
-        this.storeServer = new ForwardIndex();
+        this.forwardIndex = new ForwardIndex();
         this.frontier = new FrontierQueue();
-        this.docIDServer = new DocIndex();
-        this.linkServer = new LinkGraph();
+        this.docIndex = new DocIndex();
+        this.linkGraph = new LinkGraph();
+        this.fetcher = new WebPageFetcher();
+        
     }
     
-    public ForwardIndex getStoreServer(){
-        return this.storeServer;
+    public ForwardIndex getForwardIndex(){
+        return this.forwardIndex;
     }
     
     public FrontierQueue getFrontierQueue(){
         return this.frontier;
     }
     
-    public DocIndex getDocIDServer(){
-        return this.docIDServer;
+    public DocIndex getDocIndex(){
+        return this.docIndex;
     }
     
-    public LinkGraph getLinkServer(){
-        return this.linkServer;
+    public LinkGraph getLinkGraph(){
+        return this.linkGraph;
     }
 
     /**
@@ -69,6 +73,7 @@ public class WebCrawlerController {
      * @throws IOException 
      */
     public void start(int numCrawlers) throws IOException{
+        System.out.println("Starting crawl...");
         try{
             finished = false;
             final List<Thread> threads = new ArrayList<>();
@@ -84,25 +89,104 @@ public class WebCrawlerController {
                 threads.add(thread);
                 System.out.println("Crawler "+ i + " started");
             }
-            final WebCrawlerController server = this;
+            final WebCrawlerController crawlController = this;
             Thread monitorThread = new Thread(new Runnable() {
                 
                 @Override
                 public void run() {
-                    
-                    for (int j = 0; j < threads.size(); j++){
-                        Thread thread = threads.get(j);
-                        try {
-                            thread.wait(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(WebCrawlerController.class.getName()).log(Level.SEVERE, null, ex);
+                    try {
+                        //lock is acquired for monitor thread
+                        synchronized (waitingLock) {
+                            while (true) {
+                                Thread.sleep(20000);
+                                boolean someThreadWorking = false;
+                                for (int j = 0; j < threads.size(); j++){
+                                    Thread thread = threads.get(j);
+                                    if (!thread.isAlive()){
+                                        if (!shuttingDown){
+                                            WebCrawler crawler = new WebCrawler();
+                                            thread = new Thread(crawler, "Crawler " + (j + 1));
+                                            threads.remove(j);
+                                            threads.add(j, thread);
+                                            crawler.setThread(thread);
+                                            crawler.init(j + 1, crawlController);
+                                            thread.start();
+                                            crawlers.remove(j);
+                                            crawlers.add(j, crawler);
+                                            System.out.println("Crawler "+ j + " restarted");
+                                        }
+                                    } else if (!crawlers.get(j).isWaitingForNewURLs) {
+                                        someThreadWorking = true;
+                                    }
+
+                                }
+                                boolean shutOnEmpty = true;
+                                if (!someThreadWorking && shutOnEmpty) {
+                                    //wait 10 seconds to make sure no threads are alive
+                                    Thread.sleep(10000);
+                                    someThreadWorking = false;
+                                    for (int k = 0; k < threads.size(); k++){
+                                        Thread thread = threads.get(k);
+                                        if (thread.isAlive() && !crawlers.get(k).isWaitingForNewURLs) {
+                                            someThreadWorking = true;
+                                        }
+                                    }
+                                    if (!someThreadWorking) {
+                                        long queueLength = frontier.getQueueLength();
+                                        if (queueLength > 0){
+                                            continue;
+                                        }
+                                        System.out.println("No thread is working and no more URLs are in the queue.");
+                                        Thread.sleep(5000);
+                                        queueLength = frontier.getQueueLength();
+                                        if (queueLength > 0){
+                                            continue;
+                                        }
+                                        System.out.println("All crawlers have stopped Finishing the process...");
+                                        frontier.finish();
+                                        Thread.sleep(5000);
+                                        frontier.close();
+                                        docIndex.close();
+                                        forwardIndex.closeConnection();
+                                        finished = true;
+                                        waitingLock.notifyAll();
+                                        return;
+                                    }
+                                }
+                            }
                         }
-                        
+                    }catch (Exception e){
+                        System.err.println("Error while monitoring threads.");
                     }
+                    
                 }
             });
+            monitorThread.start();
+            waitUntilFinish();
+            if (monitorThread.isAlive()){
+                monitorThread.stop();
+            }
+            
         } catch(Exception e){
             System.err.println("URLServer error");
+        }
+    }
+    
+    /**
+     * Wait until this crawling session finishes.
+     */
+    public void waitUntilFinish() {
+        while (!finished) {
+            synchronized (waitingLock) {
+                if (finished) {
+                    return;
+                }
+                try {
+                    waitingLock.wait();
+                } catch (InterruptedException e) {
+                    System.err.println("Error: "+ e);
+                }
+            }
         }
     }
     
@@ -112,18 +196,58 @@ public class WebCrawlerController {
      * @param docID 
      */
     public void addSeed(String url, int docID){
+        if (docID < 0){
+            docID = docIndex.getDocID(url);
+            if (docID > 0){
+                System.out.println("This URL has already been seen");
+                return;
+            }
+            docID = docIndex.getNewDocID(url);
+        } else {
+            try{
+                docIndex.addEntry(url, docID);
+            } catch (Exception e){
+                System.err.println("Could not add seed: " + url);
+            }
+        }
+        URL webUrl = new URL();
+        webUrl.setURL(url);
+        webUrl.setDocid(docID);
+        webUrl.setDepth((short)0);
+        frontier.addURL(webUrl);
         
+    }
+    
+    public boolean isFinished(){
+        return this.finished;
+    }
+    
+    public boolean isShuttingDown() {
+        return shuttingDown;
+    }
+    
+    /**
+     * Set the current crawling session set to 'shutdown'. Crawler threads
+     * monitor the shutdown flag and when it is set to true, they will no longer
+     * process new pages.
+     */
+    public void shutdown() {
+        System.out.println("Shutting down...");
+        this.shuttingDown = true;
+        frontier.finish();
     }
     
      /**
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         int numThreads = 2;
         WebCrawlerController controller = new WebCrawlerController();
+        controller.addSeed("https://moz.com/top500", -1);
+        
         controller.start(2);
-    }
-
-    
+        Thread.sleep(10000);
+        controller.shutdown();
+    }   
 }

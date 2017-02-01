@@ -25,9 +25,12 @@ public class WebPageFetcher {
      * @throws Exception 
      */
     public static Response fetchPage(URL webURL) throws Exception{
+        System.setProperty("https.proxyHost", "localhost");
+        System.setProperty("https.proxyPort", "443");
         Connection.Response response = null;
+        String url = webURL.getURL();
+        notEmpty(url);
         try {
-            String url = webURL.getURL();
             response = Jsoup.connect(url)
             .data("query", "Java")
             .userAgent("User-Agent:Mozilla/5.0")
@@ -38,6 +41,12 @@ public class WebPageFetcher {
             Logger.getLogger(URL.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        
         return response;
+    }
+    
+    public static void notEmpty(String string) {
+        if (string == null || string.length() == 0)
+            throw new IllegalArgumentException("String must not be empty");
     }
 }
