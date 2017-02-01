@@ -69,6 +69,8 @@ public class WebCrawlerController {
 
     /**
      * generate crawler threads and start them
+     * Thread scheduling and monitoring based heavily on the crawler controller found here: 
+     * https://github.com/yasserg/crawler4j/blob/master/src/main/java/edu/uci/ics/crawler4j/crawler/CrawlController.java
      * @param numCrawlers number of crawlers to deploy
      * @throws IOException 
      */
