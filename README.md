@@ -32,6 +32,7 @@
                NOTE: you may be required to configure your own login credentials, but if that fails mine are: 
                user:'root' 
                pass:'focus1458'
+
 8) Run the project!
         NOTE: To Run the project at this point run the WebCrawlerController.java file located in the webcrawler package. I'm still working out the kinks, so for now stop the project manually when you are done. Check the various databases to view the results of your crawl.              
        
