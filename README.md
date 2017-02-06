@@ -1,61 +1,41 @@
-# SearchEngine
+# Getting Started
 
-Turn in 1
-
-CREATE TABLE statements:
-
-Frontier Queue: Redis
-
-        RedisClient frontierQueue = new RedisClient();
-        RedisConnection<int, String> connection = frontierQueue.connect();
-        connection.set(priority, url);
-        connection.close();
-        redisClient.shutdown()
+1) Clone this repository.
+2) Download the following JARs and add them to your classpath:
+        http://central.maven.org/maven2/org/jsoup/jsoup/1.10.1/jsoup-1.10.1.jar
+        https://jsoup.org/packages/jsoup-1.10.1-javadoc.jar
+        http://central.maven.org/maven2/redis/clients/jedis/2.4.2/jedis-2.4.2.jar
+        http://central.maven.org/maven2/org/neo4j/neo4j-jdbc/3.0.1/neo4j-jdbc-3.0.1.jar
+        https://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.23
         
-  
-
-Document ID DataBase (Document Index): Redis
-
-        RedisClient docIndex = new RedisClient();
-        RedisConnection<String, int> connection = docIndex.connect();
-        connection.set(url, docID);
-        connection.close();
-        redisClient.shutdown()
+3) Follow these directions to complete the Neo4j setup:
+        https://www.tutorialspoint.com/neo4j/neo4j_java_environment_setup.htm
         
-Links Database: Redis
-        RedisClient linksDB = new RedisClient();
-        RedisConnection<String, List<String>,List<String>> connection = linksDB.connect();
-        connection.set(curURL, null , childUrl);
-        connection.set(childURL, currURL, null);
-        connection.close();
-        redisClient.shutdown()
+4) Install MySQL:
+        https://dev.mysql.com/doc/refman/5.6/en/osx-installation-pkg.html
+
+5) Install Redis and set up a second instance to run alongside the first:
+        http://www.codexpedia.com/devops/install-redis-and-set-multiple-redis-instances-on-mac-os/
+        NOTE: the Frontier Queue uses port 6379 and the Document Index uses port 6380
         
- Why Redis? Redis is an in-memory database system that supports data persistence, making it both fast and crash resistent. Periodic snapshots of the database can be saved to memory so that if the crawler ever needs to exit or if it crashes, startup can happen from the last snapshot.
- Sources: 
- https://product.reverb.com/a-simple-priority-queue-with-redis-in-ruby-7e3ec780f237#.ahhs2qvq0
- http://blog.marc-seeger.de/assets/papers/thesis_seeger-building_blocks_of_a_scalable_webcrawler.pdf
- https://redislabs.com/why-redis
- 
- ForwardIndex: InnoDB
- 
-  CREATE TABLE t1 (docID INT, htmldocument TEXT (20), PRIMARY KEY (a));
-  
-  Why InnoDB? InnoDB has fast write capabilities, which it perfect for the forward index. 
-  
-  Source on DBs: 
-  
-  https://dev.mysql.com/doc/refman/5.6/en/innodb-fulltext-index.html
-  http://blog.marc-seeger.de/assets/papers/thesis_seeger-building_blocks_of_a_scalable_webcrawler.pdf
-  
-  InvertedIndex: Solr
-  
-  Creating a solr index: https://docs.datastax.com/en/datastax_enterprise/4.5/datastax_enterprise/srch/srchIdx.html
-  
-  Why Solr? 
-  Sources: 
-  http://blog.marc-seeger.de/assets/papers/thesis_seeger-building_blocks_of_a_scalable_webcrawler.pdf
-  http://lucene.apache.org/solr/features.html
- 
- 
- UI will be implemented using basic html and the Solr library
+6) Intall Neo4J Community Edition & Redis Desktop Manager:
+        https://neo4j.com/download/
+        https://redisdesktop.com/ (Optional but nice to have)
+        NOTE: For Redis Desktop Manager you will be required to buy a subscription. Ask me for my login info to complete this step.
+
+7) Start all databases.
+        Neo4j: This database does not require running beforehand. Run Neo4J Community Edition in order to view the graph in your browser,                  but make sure it is shutdown before executing my code.
+        Redis: In two fresh terminal windows execute the following commands: 
+                redis-server /usr/local/etc/redis.conf
+                redis-server /usr/local/etc/redis2.conf
+        MySQL: Open System Preferences and click on the MySQL icon. Hit the 'Start MySQL Server' button.
+               NOTE: you may be required to configure your own login credentials, but if that fails mine are: 
+               user:'root' 
+               pass:'focus1458'
+8) Run the project!
+        NOTE: To Run the project at this point run the WebCrawlerController.java file located in the webcrawler package. I'm still working out the kinks, so for now stop the project manually when you are done. Check the various databases to view the results of your crawl.              
+       
+
+
+
  
