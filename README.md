@@ -1,6 +1,7 @@
 # Getting Started
 
 1) Clone this repository.
+
 2) Download the following JARs and add them to your classpath:
         http://central.maven.org/maven2/org/jsoup/jsoup/1.10.1/jsoup-1.10.1.jar
         https://jsoup.org/packages/jsoup-1.10.1-javadoc.jar
