@@ -32,7 +32,7 @@ NOTE: For Redis Desktop Manager you will be required to buy a subscription. Ask 
 ```
 7) Start all databases.
 ```
-Neo4j: This database does not require running beforehand. Run Neo4J Community Edition in order to view the graph in your browser,        but make sure it is shutdown before executing my code.
+Neo4j: This database does not require running beforehand. Run Neo4J Community Edition in order to view the graph in your browser, but make sure it is shutdown before executing my code.
 Redis: In two fresh terminal windows execute the following commands: 
        redis-server /usr/local/etc/redis.conf
        redis-server /usr/local/etc/redis2.conf
