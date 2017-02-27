@@ -74,17 +74,18 @@ public class WebCrawler implements Runnable {
         
         //send all URLs from webPage to docIDServer to add them to the anchors index/further process
         Elements relativeLinks = webPage.getLinks();
-        ArrayList<String> links = new ArrayList<String>();
+        TreeSet<String> links = new TreeSet();
         for (Element e:relativeLinks){
             System.out.println("Found Link: " + e.attr("abs:href"));
             links.add(e.attr("abs:href"));
         }   
         while (links.size() > 0){
-            String curURL = links.remove(0);
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~GOT HERE!~~~~~~~~~~~~~~~~~~~~~~~~~");
+            String curURL = links.pollFirst();
             URL childURL = new URL();
             childURL.setURL(curURL);
             //set priority - random for now.
-            childURL.setPriority(new Random().nextInt(10));
+            childURL.setPriority(new Random().nextInt(1000));
             if (docIndex.isSeen(curURL)){
                 // get url's id
                 System.err.println("Have seen " + curURL);
@@ -100,6 +101,7 @@ public class WebCrawler implements Runnable {
                 //add to link graph with updated parent info
                 addLinkToGraph(parentID, childID);
                 //add child url to frontier
+                System.out.println("Calling frontier.addURL()");
                 frontier.addURL(childURL);
             }
         }

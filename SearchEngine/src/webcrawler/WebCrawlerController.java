@@ -237,6 +237,8 @@ public class WebCrawlerController {
         System.out.println("Shutting down...");
         this.shuttingDown = true;
         frontier.finish();
+        linkGraph.shutDown();
+        System.exit(0);
     }
     
      /**
@@ -247,6 +249,7 @@ public class WebCrawlerController {
         int numThreads = 2;
         WebCrawlerController controller = new WebCrawlerController();
         controller.addSeed("https://moz.com/top500", -1);
+        controller.addSeed("https://en.wikipedia.org/wiki/List_of_most_popular_websites", -1);
         
         controller.start(2);
         Thread.sleep(10000);

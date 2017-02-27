@@ -15,6 +15,7 @@ public class ForwardIndex {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost:3306/FORWARDINDEX?zeroDateTimeBehavior=convertToNull";
     
+    
     // Database Credentials
     static final String USER = "root";
     static final String PASS = "focus1458";
@@ -24,7 +25,8 @@ public class ForwardIndex {
     
     
     public ForwardIndex(){
-        Statement stmt = null;
+        Statement stmt = null;  
+        initDB();
         try{ 
             //register Driver class
             Class.forName(JDBC_DRIVER);
@@ -32,9 +34,6 @@ public class ForwardIndex {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
-            //create page data table
-//            String sql = "CREATE TABLE PAGEDATA(ID INT NOT NULL, TYPE CHAR(1) NOT NULL, TEXT TEXT NOT NULL, PRIMARY KEY (ID));";
-//            stmt.executeUpdate(sql);
             System.out.println("Database created successfully...");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ForwardIndex.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,6 +97,32 @@ public class ForwardIndex {
         } catch (SQLException ex) {
             Logger.getLogger(ForwardIndex.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error: could not close SQL database connection!");
+        }
+    }
+    
+    public void initDB(){
+        Statement stmt = null;
+         // SQL command to create a database in MySQL.
+        String createDB = "CREATE DATABASE IF NOT EXISTS FORWARDINDEX";
+        String createTable = "CREATE TABLE PAGEDATA(ID INT NOT NULL, TYPE CHAR(1) NOT NULL, TEXT TEXT NOT NULL, PRIMARY KEY (ID));";
+        String url= "jdbc:mysql://localhost:3306";
+
+        try{
+            Connection conn = DriverManager.getConnection(url, USER, PASS);
+            stmt = conn.createStatement();
+            stmt.executeUpdate(createDB);
+            stmt.close();
+        } catch (Exception e) {
+        e.printStackTrace();
+        System.exit(1);
+        }
+        try{
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            stmt.executeUpdate(createTable);
+            stmt.close();
+        }catch(Exception f) {
+            System.out.println("Table PAGEDATA already exists!");
         }
     }
 }
