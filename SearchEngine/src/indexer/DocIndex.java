@@ -14,6 +14,7 @@ import redis.clients.jedis.Jedis;
  */
 public class DocIndex { 
     private final Jedis docIDsDB;
+    private final URLResolver urlResolver;
     private int lastDocID;
     
     // anytime the database creates a new ID, this lock must be acquired to avoid
@@ -28,6 +29,7 @@ public class DocIndex {
         docIDsDB = new Jedis("localhost",6380);
         System.out.println("Connected to Document Index server successfully");
         System.out.println("Server is running:" + docIDsDB.ping());
+        urlResolver = new URLResolver();
     }
     
     /**
@@ -63,7 +65,7 @@ public class DocIndex {
         synchronized(idLock){
             int docID;
             String response = docIDsDB.get(url);
-            System.out.println(response);
+            //System.out.println(response);
             docID = getDocID(url);
             if (docID == -1){
                 ++lastDocID;
@@ -91,6 +93,7 @@ public class DocIndex {
                 return;
             }
             docIDsDB.set(url, Integer.toString(docID));
+            urlResolver.addEntry(url, docID);
             lastDocID = docID;
         }
     }
@@ -102,10 +105,13 @@ public class DocIndex {
         int docID = getNewDocID(url);
         synchronized(idLock){
             docIDsDB.set(url, Integer.toString(docID));
+            urlResolver.addEntry(url, docID);
         }
     }
     
-    
+    public String getURLByDocID(String docID){
+        return urlResolver.getURL(docID);
+    }
     
     /**
      * checks if a url has been crawled

@@ -39,7 +39,7 @@ public class FrontierQueue {
      * @param url 
      */
     public void addURL(URL url){
-        System.out.println("attempting to add url to frontier.");
+        //System.out.println("attempting to add url to frontier.");
         String link = url.getURL();
         double score = url.getPriority();
         synchronized(frontierLock){
@@ -81,7 +81,7 @@ public class FrontierQueue {
                         break;
             }
             queue.zadd(keyName, score, link);
-            System.out.println("added url to frontier.");
+            //System.out.println("added url to frontier.");
             queueLength++;
         }
     }

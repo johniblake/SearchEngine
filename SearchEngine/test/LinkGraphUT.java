@@ -44,8 +44,8 @@ public class LinkGraphUT {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void LinkGraphTest() {
-        linkGraph.shutDown();
+     public void LinkGraphTest() throws Exception {
+        linkGraph.addLink(0, 0);
         assertEquals(0,0);
      }
 }

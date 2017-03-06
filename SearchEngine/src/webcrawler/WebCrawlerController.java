@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import fetcher.WebPageFetcher;
 import indexer.ForwardIndex;
+import indexer.InvertedIndex;
 import frontier.FrontierQueue;
 import indexer.DocIndex;
 import indexer.LinkGraph;
@@ -29,6 +30,7 @@ public class WebCrawlerController {
     protected boolean shuttingDown;
     protected FrontierQueue frontier;
     protected ForwardIndex forwardIndex;
+    protected InvertedIndex invertedIndex;
     protected DocIndex docIndex;
     protected LinkGraph linkGraph;
     protected static final Object waitingLock = new Object();
@@ -44,11 +46,16 @@ public class WebCrawlerController {
         this.finished = false;
         this.shuttingDown = false;
         this.forwardIndex = new ForwardIndex();
+        this.invertedIndex = new InvertedIndex();
         this.frontier = new FrontierQueue();
         this.docIndex = new DocIndex();
         this.linkGraph = new LinkGraph();
         this.fetcher = new WebPageFetcher();
         
+    }
+    
+    public InvertedIndex getInvertedIndex(){
+        return this.invertedIndex;
     }
     
     public ForwardIndex getForwardIndex(){
@@ -115,7 +122,7 @@ public class WebCrawlerController {
                                             thread.start();
                                             crawlers.remove(j);
                                             crawlers.add(j, crawler);
-                                            System.out.println("Crawler "+ j + " restarted");
+                                            //System.out.println("Crawler "+ j + " restarted");
                                         }
                                     } else if (!crawlers.get(j).isWaitingForNewURLs) {
                                         someThreadWorking = true;
@@ -237,7 +244,7 @@ public class WebCrawlerController {
         System.out.println("Shutting down...");
         this.shuttingDown = true;
         frontier.finish();
-        linkGraph.shutDown();
+//        linkGraph.shutDown();
         System.exit(0);
     }
     
@@ -248,8 +255,8 @@ public class WebCrawlerController {
     public static void main(String[] args) throws IOException, InterruptedException {
         int numThreads = 2;
         WebCrawlerController controller = new WebCrawlerController();
-        controller.addSeed("https://moz.com/top500", -1);
-        controller.addSeed("https://en.wikipedia.org/wiki/List_of_most_popular_websites", -1);
+        controller.addSeed("https://en.wikipedia.org/wiki/2007", -1);
+        controller.addSeed("https://en.wikipedia.org/wiki/Kevin_Bacon", -1);
         
         controller.start(2);
         Thread.sleep(10000);

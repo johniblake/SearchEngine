@@ -6,6 +6,7 @@ import fetcher.WebPageFetcher;
 import indexer.ForwardIndex;
 import frontier.FrontierQueue;
 import indexer.DocIndex;
+import indexer.InvertedIndex;
 import indexer.LinkGraph;
 import java.util.*;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class WebCrawler implements Runnable {
     protected WebCrawlerController crawlerController;
     protected WebPageFetcher fetcher;
     protected ForwardIndex forwardIndex;
+    protected InvertedIndex invertedIndex;
     protected DocIndex docIndex;
     private FrontierQueue frontier;
     protected LinkGraph linkGraph;
@@ -44,6 +46,7 @@ public class WebCrawler implements Runnable {
         this.crawlerController = crawlerController;
         this.fetcher = new WebPageFetcher();
         this.forwardIndex = crawlerController.getForwardIndex();
+        this.invertedIndex = crawlerController.getInvertedIndex();
         this.frontier = crawlerController.getFrontierQueue();
         this.linkGraph = crawlerController.getLinkGraph();
         this.docIndex = crawlerController.getDocIndex();
@@ -76,11 +79,11 @@ public class WebCrawler implements Runnable {
         Elements relativeLinks = webPage.getLinks();
         TreeSet<String> links = new TreeSet();
         for (Element e:relativeLinks){
-            System.out.println("Found Link: " + e.attr("abs:href"));
+//            System.out.println("Found Link: " + e.attr("abs:href"));
             links.add(e.attr("abs:href"));
         }   
         while (links.size() > 0){
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~GOT HERE!~~~~~~~~~~~~~~~~~~~~~~~~~");
+//            System.out.println("~~~~~~~~~~~~~~~~~~~~~~GOT HERE!~~~~~~~~~~~~~~~~~~~~~~~~~");
             String curURL = links.pollFirst();
             URL childURL = new URL();
             childURL.setURL(curURL);
@@ -101,10 +104,12 @@ public class WebCrawler implements Runnable {
                 //add to link graph with updated parent info
                 addLinkToGraph(parentID, childID);
                 //add child url to frontier
-                System.out.println("Calling frontier.addURL()");
+//                System.out.println("Calling frontier.addURL()");
                 frontier.addURL(childURL);
             }
         }
+        System.out.println("Adding page to inverted and forward indexes!");
+        invertedIndex.processDocument(webPage.getBody(), parentID);
         addPageToRepository(webPage, parentID);
     }
     
@@ -131,7 +136,7 @@ public class WebCrawler implements Runnable {
      * @param curURL
      * @param childURL 
      */
-    public void addLinkToGraph(int parentID, int childID){
+    public void addLinkToGraph(int parentID, int childID) throws Exception{
         linkGraph.addLink(parentID, childID);
     }
 

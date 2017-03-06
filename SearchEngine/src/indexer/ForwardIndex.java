@@ -12,8 +12,10 @@ import java.util.logging.Logger;
  */
 public class ForwardIndex {
     //JDBC driver name and database URL
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/FORWARDINDEX?zeroDateTimeBehavior=convertToNull";
+    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/FORWARDINDEX?zeroDateTimeBehavior=convertToNull";
+    private static final String BAD_CHARS = "[^a-zA-Z0-9]+";
+
     
     
     // Database Credentials
@@ -43,21 +45,7 @@ public class ForwardIndex {
             Logger.getLogger(ForwardIndex.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error: Failed to establish SQL database connection!");
             System.exit(1);
-        }//finally{
-//            //finally block used to close resources
-//            try{
-//                if(stmt!= null){
-//                  stmt.close();
-//                }
-//            }catch(SQLException se2){
-//                //nothing we can do
-//            }try{
-//             if(conn!=null)
-//                conn.close();
-//            }catch(SQLException se){
-//                se.printStackTrace();
-//            }//end finally try
-//        }
+        }
     }
     
     /**
@@ -66,6 +54,7 @@ public class ForwardIndex {
      */
     public void addDocumentToDB(WebPage webpage, int id){
         String data = webpage.getBody();
+        data = data.replaceAll(BAD_CHARS, " ");
         sqlCreate(id,'h', data);
     }
     /**
@@ -79,10 +68,10 @@ public class ForwardIndex {
     
     public void sqlCreate(int id, char datatype, String data){
         Statement stmt;
+        String sql;
+        sql = "INSERT INTO PAGEDATA VALUES ("+id+",'"+ datatype +"',\""+ data +"\");";
         try{
-            stmt = conn.createStatement();
-            String sql;
-            sql = "INSERT INTO PAGEDATA VALUES ("+id+",'"+ datatype +"',\""+ data +"\");";
+            stmt = conn.createStatement(); 
             stmt.executeUpdate(sql);
             stmt.close();
         }catch (SQLException se){
@@ -113,8 +102,8 @@ public class ForwardIndex {
             stmt.executeUpdate(createDB);
             stmt.close();
         } catch (Exception e) {
-        e.printStackTrace();
-        System.exit(1);
+            e.printStackTrace();
+            System.exit(1);
         }
         try{
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
