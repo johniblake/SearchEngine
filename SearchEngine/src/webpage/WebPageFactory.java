@@ -34,6 +34,7 @@ public class WebPageFactory {
         webPage.setUrl(url);
         String contentType = response.contentType(); 
         Document webDocument = response.parse();
+        String title = webDocument.title();
         Elements links = webDocument.select("a[href]");
         Elements filteredLinks = new Elements();
 //        for (Element link: links){
@@ -46,6 +47,7 @@ public class WebPageFactory {
 //            }
 //        }
         Element body = webDocument.body();
+        webPage.setTitle(title);
         webPage.setLinks(links);
         webPage.setBody(body.text());
         webPage.setContentType(contentType);

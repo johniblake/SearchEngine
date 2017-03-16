@@ -15,6 +15,7 @@ import indexer.InvertedIndex;
 import frontier.FrontierQueue;
 import indexer.DocIndex;
 import indexer.LinkGraph;
+import indexer.TitleIndex;
 import webpage.URL;
 
 
@@ -33,6 +34,7 @@ public class WebCrawlerController {
     protected InvertedIndex invertedIndex;
     protected DocIndex docIndex;
     protected LinkGraph linkGraph;
+    protected TitleIndex titleIndex;
     protected static final Object waitingLock = new Object();
 
     /**
@@ -49,6 +51,7 @@ public class WebCrawlerController {
         this.invertedIndex = new InvertedIndex();
         this.frontier = new FrontierQueue();
         this.docIndex = new DocIndex();
+        this.titleIndex = new TitleIndex();
         this.linkGraph = new LinkGraph();
         this.fetcher = new WebPageFetcher();
         
@@ -68,6 +71,10 @@ public class WebCrawlerController {
     
     public DocIndex getDocIndex(){
         return this.docIndex;
+    }
+    
+    public TitleIndex getTitleIndex(){
+        return this.titleIndex;
     }
     
     public LinkGraph getLinkGraph(){

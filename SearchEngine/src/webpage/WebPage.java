@@ -43,6 +43,12 @@ public class WebPage {
     
     
     /**
+     * The page title
+     */
+    protected String title;
+    
+    
+    /**
      * URLs found on this webpage
      */
     protected Elements links;
@@ -51,6 +57,11 @@ public class WebPage {
     public WebPage() {
   
     }
+    
+    public String getTitle(){
+        return title;
+    }
+    
 
     public URL getUrl() {
         return url;
@@ -74,6 +85,10 @@ public class WebPage {
 
     public Elements getLinks() {
         return links;
+    }
+    
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setUrl(URL url) {

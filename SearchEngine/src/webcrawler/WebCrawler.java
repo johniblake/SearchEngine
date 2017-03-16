@@ -8,6 +8,7 @@ import frontier.FrontierQueue;
 import indexer.DocIndex;
 import indexer.InvertedIndex;
 import indexer.LinkGraph;
+import indexer.TitleIndex;
 import java.util.*;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ public class WebCrawler implements Runnable {
     protected DocIndex docIndex;
     private FrontierQueue frontier;
     protected LinkGraph linkGraph;
+    protected TitleIndex titleIndex;
     protected boolean isWaitingForNewURLs;
     
     public void init(int id, WebCrawlerController crawlerController) throws IOException {
@@ -50,6 +52,7 @@ public class WebCrawler implements Runnable {
         this.frontier = crawlerController.getFrontierQueue();
         this.linkGraph = crawlerController.getLinkGraph();
         this.docIndex = crawlerController.getDocIndex();
+        this.titleIndex = crawlerController.getTitleIndex();
         this.isWaitingForNewURLs = false;
         
     }
@@ -91,7 +94,7 @@ public class WebCrawler implements Runnable {
             childURL.setPriority(new Random().nextInt(1000));
             if (docIndex.isSeen(curURL)){
                 // get url's id
-                System.err.println("Have seen " + curURL);
+                //System.err.println("Have seen " + curURL);
                 int childID = docIndex.getDocID(curURL);
                 addLinkToGraph(parentID, childID);
                 
@@ -111,6 +114,7 @@ public class WebCrawler implements Runnable {
         System.out.println("Adding page to inverted and forward indexes!");
         invertedIndex.processDocument(webPage.getBody(), parentID);
         addPageToRepository(webPage, parentID);
+        titleIndex.addEntry(webPage.getTitle(), parentID);
     }
     
     /**

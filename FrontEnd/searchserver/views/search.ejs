@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <head>
+    <a href ="/"><title><%= title %></title></a>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <form action="search" id="searchpgsearch">
+      <h1><%= title %></h1>
+      <input class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
+    </form>
+    <div id ="results">
+      <ul>
+        <% for (i in items){ %>
+          <% if (items[i].pages.length > 0) {%>
+            <h3><%= items[i].phrase %></h3>
+            <% for (j in items[i].pages) {%>
+              <div id="result">
+                <!-- TODO: Put title into href -->
+                <a href =<%=items[i].pages[j].url%>><%= items[i].pages[j].title %></a>
+                <div id="linktext">
+                  <%=items[i].pages[j].url%>
+                </div>
+                <div id="pagerank">
+                  Page Rank: <%=items[i].pages[j].pagerank%>
+                </div>
+              <div>
+            <%}%>
+          <%}%>
+        <%}%>
+      </ul>
+    </div>
+    <% include templates/footer.ejs%>
+  </body>
+</html>

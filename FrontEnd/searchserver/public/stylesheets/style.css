@@ -1,0 +1,51 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#main {
+  display:flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#footer{
+  font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
+  position: relative;
+}
+
+#result{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+#linktext {
+  font: 8px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: black;
+  position: relative;
+}
+#pagerank {
+  font: 6px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: red;
+  position: relative;
+}
+
+/*#mainpgsearch {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  min-width: 200px;
+}
+
+#searchpgsearch {
+  display:flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+  align-items:center;
+  justify-content: center;;
+}*/

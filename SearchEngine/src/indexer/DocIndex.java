@@ -5,6 +5,7 @@
  */
 package indexer;
 
+import java.util.HashSet;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -16,6 +17,7 @@ public class DocIndex {
     private final Jedis docIDsDB;
     private final URLResolver urlResolver;
     private int lastDocID;
+    private HashSet<String> lastThousand;
     
     // anytime the database creates a new ID, this lock must be acquired to avoid
     // creating the same ID in two different threads.

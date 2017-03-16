@@ -42,44 +42,45 @@ public class FrontierQueue {
         //System.out.println("attempting to add url to frontier.");
         String link = url.getURL();
         double score = url.getPriority();
+        keyName ="frontier";
         synchronized(frontierLock){
-            int cycle = modCycle(queueCycle);
-            switch(cycle){
-                case 0: keyName = "frontier0";
-                        break;
-                case 1: keyName = "frontier1";
-                        break;
-                case 2: keyName = "frontier2";
-                        break;
-                case 3: keyName = "frontier3";
-                        break;
-                case 4: keyName = "frontier4";
-                        break;
-                case 5: keyName = "frontier5";
-                        break;
-                case 6: keyName = "frontier6";
-                        break;
-                case 7: keyName = "frontier7";
-                        break;
-                case 8: keyName = "frontier8";
-                        break;
-                case 9: keyName = "frontier9";
-                        break;
-                case 10: keyName = "frontier10";
-                        break;
-                case 11: keyName = "frontier11";
-                        break;
-                case 12: keyName = "frontier12";
-                        break;
-                case 13: keyName = "frontier13";
-                        break;
-                case 14: keyName = "frontier14";
-                        break;
-                case 15: keyName = "frontier15";
-                        break;
-                default: keyName = "frontier";
-                        break;
-            }
+//            int cycle = modCycle(queueCycle);
+//            switch(cycle){
+//                case 0: keyName = "frontier0";
+//                        break;
+//                case 1: keyName = "frontier1";
+//                        break;
+//                case 2: keyName = "frontier2";
+//                        break;
+//                case 3: keyName = "frontier3";
+//                        break;
+//                case 4: keyName = "frontier4";
+//                        break;
+//                case 5: keyName = "frontier5";
+//                        break;
+//                case 6: keyName = "frontier6";
+//                        break;
+//                case 7: keyName = "frontier7";
+//                        break;
+//                case 8: keyName = "frontier8";
+//                        break;
+//                case 9: keyName = "frontier9";
+//                        break;
+//                case 10: keyName = "frontier10";
+//                        break;
+//                case 11: keyName = "frontier11";
+//                        break;
+//                case 12: keyName = "frontier12";
+//                        break;
+//                case 13: keyName = "frontier13";
+//                        break;
+//                case 14: keyName = "frontier14";
+//                        break;
+//                case 15: keyName = "frontier15";
+//                        break;
+//                default: keyName = "frontier";
+//                        break;
+//            }
             queue.zadd(keyName, score, link);
             //System.out.println("added url to frontier.");
             queueLength++;
@@ -97,7 +98,7 @@ public class FrontierQueue {
             links = queue.zrange(keyName, 0, 0);
             queue.zremrangeByRank(keyName, 0, 0);
             queueLength--;
-            cycle();
+//            cycle();
         }
         for (String link:links){
             System.out.println("Got link: " + link);
