@@ -83,7 +83,8 @@ public class WebCrawler implements Runnable {
         TreeSet<String> links = new TreeSet();
         for (Element e:relativeLinks){
 //            System.out.println("Found Link: " + e.attr("abs:href"));
-            links.add(e.attr("abs:href"));
+            String parsedLink = e.attr("abs:href").replaceAll("[?#].*","");
+            links.add(parsedLink);
         }   
         while (links.size() > 0){
 //            System.out.println("~~~~~~~~~~~~~~~~~~~~~~GOT HERE!~~~~~~~~~~~~~~~~~~~~~~~~~");
