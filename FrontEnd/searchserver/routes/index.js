@@ -27,7 +27,7 @@ router.get('/about', function(req, res, next) {
 router.get('/search', function(req, res) {
   var stack = [];
   var finalresponse = [];
-  query = req.query.typeahead.replace(/[^a-zA-Z]+/g, " ").split(" ");
+  query = req.query.typeahead.toLowerCase().replace(/[^a-zA-Z]+/g, " ").split(" ");
   querycopy = [];
   for(i in query){
     querycopy.push(query[i]);
@@ -173,6 +173,7 @@ router.get('/search', function(req, res) {
       var pages = item.pages
       pageSets[i]= [pages];
     }
+    phrase = phrase.slice(0,-1);
     var pages = mergeSortByPageRank(getIntersection(pageSets));
 
     return {
@@ -210,7 +211,7 @@ router.get('/search', function(req, res) {
     return result;
   }
 
-  //async.parallel syncronizes a stack of functions. In this case each function is a
+  //async.parallel syncronizes a stack of functions. In this case each function is a backend query for each word in the original query
   async.parallel(stack, function (error, result) {
     resSubsets = getSubsets(result,result.length-2);
     results = [];

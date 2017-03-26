@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
+  <script>
+  $(function () {
+    $("#mainpgsearch").bind("keydown", function(e) {
+      //change css of entire page to match that of search page
+      $('#main').css('flex-direction' , 'row');
+      $('#main').css('font' , '18px "Lucida Grande", Helvetica, Arial, sans-serif');
+      $('#mainpgsearch').css('margin-left' , '10px');
+      $('#footer').hide();
+    });
+  });
+  </script>
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body id="main">
     <h1><%= title %></h1>
-    <form action="search">
-      <input class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
+    <form id="mainpgform" action="search">
+      <input id ="mainpgsearch" class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
     </form>
-    <p>Welcome to <%= title %></p>
     <% include templates/footer.ejs%>
   </body>
 </html>

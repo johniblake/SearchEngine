@@ -12,12 +12,16 @@ a {
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
-  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 40px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 #footer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
-  position: relative;
+  justify-content:space-between;
+  position:relative;
 }
 
 #result{
@@ -35,17 +39,35 @@ a {
   position: relative;
 }
 
-/*#mainpgsearch {
+#mainpgsearch {
   display: flex;
   flex-direction: column;
-  width: 20%;
+  font-size: 20px;
   min-width: 200px;
 }
 
+#searchbar{
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#resultsfor{
+  color: slategrey;
+}
+
 #searchpgsearch {
+  margin-left: 10px;
+  min-width: 200px;
+  font-size: 20px;
+}
+
+#searchpgform{
   display:flex;
   flex-direction:row;
   flex-wrap: wrap;
-  align-items:center;
-  justify-content: center;;
-}*/
+  align-items:left;
+  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+}

@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+  $( document ).ready(function() {
+    $('#footer').css('display','inline');
+  });
+
+  </script>
   <head>
-    <a href ="/"><title><%= title %></title></a>
+    <a href ="/"><title id="searchpgtitle"><%= title %></title></a>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <form action="search" id="searchpgsearch">
-      <h1><%= title %></h1>
-      <input class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
-    </form>
+
+      <form action="search">
+        <div id="searchbar">
+          <h1><%= title %></h1>
+          <input id="searchpgsearch" class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
+        </div>
+      </form>
     <div id ="results">
       <ul>
+        <%x=0%>
         <% for (i in items){ %>
           <% if (items[i].pages.length > 0) {%>
-            <h3><%= items[i].phrase %></h3>
-            <% for (j in items[i].pages) {%>
-              <div id="result">
-                <!-- TODO: Put title into href -->
-                <a href =<%=items[i].pages[j].url%>><%= items[i].pages[j].title %></a>
-                <div id="linktext">
-                  <%=items[i].pages[j].url%>
-                </div>
-                <div id="pagerank">
-                  Page Rank: <%=items[i].pages[j].pagerank%>
-                </div>
-              <div>
-            <%}%>
+            <%x+=1%>
+            <div id="resultsbar">
+              <h3 id="resultsfor" ><%= "Results containing '" + items[i].phrase + "' :"%></h3>
+            <div>
+            <div id="resultsdiv">
+              <% for (j in items[i].pages) {%>
+                <div id="result">
+                  <!-- TODO: Put title into href -->
+                  <a href =<%=items[i].pages[j].url%>><%= items[i].pages[j].title %></a>
+                  <div id="linktext">
+                    <%=items[i].pages[j].url%>
+                  </div>
+                  <div id="pagerank">
+                    Page Rank: <%=items[i].pages[j].pagerank%>
+                  </div>
+                <div>
+              <%}%>
+            </div>
           <%}%>
+        <%}%>
+        <%if (x==0){%>
+          <h3>No Results :(</h3>
         <%}%>
       </ul>
     </div>
