@@ -213,7 +213,7 @@ router.get('/search', function(req, res) {
 
   //async.parallel syncronizes a stack of functions. In this case each function is a backend query for each word in the original query
   async.parallel(stack, function (error, result) {
-    resSubsets = getSubsets(result,result.length-2);
+    resSubsets = getSubsets(result,1);
     results = [];
     for (i in resSubsets) {
       results.unshift(processPhrase(resSubsets[i]));

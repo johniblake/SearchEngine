@@ -7,7 +7,9 @@
       //change css of entire page to match that of search page
       $('#main').css('flex-direction' , 'row');
       $('#main').css('font' , '18px "Lucida Grande", Helvetica, Arial, sans-serif');
+      $('#main').css('margin-top' , '20px');
       $('#mainpgsearch').css('margin-left' , '10px');
+      $('#mainpgform').css('margin-top' , '0px');
       $('#footer').hide();
     });
   });
@@ -16,11 +18,13 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <body id="main">
-    <h1><%= title %></h1>
-    <form id="mainpgform" action="search">
-      <input id ="mainpgsearch" class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
-    </form>
-    <% include templates/footer.ejs%>
+  <body>
+    <div id ="main">
+      <h1><%= title %></h1>
+      <form id="mainpgform" action="search">
+        <input id ="mainpgsearch" class="typeahead tt-query" spellcheck="false" autocomplete="off" name="typeahead" type="text"/>
+      </form>
+      <% include templates/footer.ejs%>
+    </div>
   </body>
 </html>
