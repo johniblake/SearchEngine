@@ -6,7 +6,7 @@
 - [JSoup] (http://central.maven.org/maven2/org/jsoup/jsoup/1.10.1/jsoup-1.10.1.jar)
 - [JSoup Javadoc] (https://jsoup.org/packages/jsoup-1.10.1-javadoc.jar)
 - [Redis] (http://central.maven.org/maven2/redis/clients/jedis/2.4.2/jedis-2.4.2.jar)
-- [Neo4J] (http://central.maven.org/maven2/org/neo4j/neo4j-jdbc/3.0.1/neo4j-jdbc-3.0.1.jar)
+- [Neo4J] (http://central.maven.org/maven2/org/neo4j/neo4j/2.2.3/neo4j-2.2.3.jar)
 - [MySQL Connector] (https://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.23)
 
         
