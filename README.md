@@ -1,4 +1,4 @@
-# Installation and Deployment
+# Back End Installation and Deployment
 
 1) Clone this repository.
 
@@ -20,19 +20,19 @@
 - docker pull kbastani/docker-neo4j:2.2.1
 - docker pull kbastani/neo4j-graph-analytics:1.1.0
 
-# Create Redis Databases
+5) Create Redis Databases
 - docker run --name redis-frontierindex -d -p 6379:6379 redis
 - docker run --name redis-docindex -d -p 6379:6380 redis
 - docker run --name redis-urlresolver -d -p 6379:6381 redis
 - docker run --name redis-titleindex -d -p 6379:6382 redis
 
-# Create HDFS
+6) Create HDFS
 docker run -i -t --name hdfs sequenceiq/hadoop-docker:2.4.1 /etc/bootstrap.sh -bash
 
-# Create Mazerunner Apache Spark Service
+7) Create Mazerunner Apache Spark Service
 docker run -i -t --name mazerunner --link hdfs:hdfs kbastani/neo4j-graph-analytics:1.1.0
 
-# Create Neo4j database with links to HDFS and Mazerunner
+9) Create Neo4j database with links to HDFS and Mazerunner
  Replace <user> and <neo4j-path> with the location to your existing Neo4j database store directory:
 - docker run -d -P -v /Users/<user>/<neo4j-path>/data:/opt/data --name graphdb --link mazerunner:mazerunner --link hdfs:hdfs kbastani/docker-neo4j:2.2.1
 
@@ -41,6 +41,18 @@ docker run -i -t --name mazerunner --link hdfs:hdfs kbastani/neo4j-graph-analyti
 ```
 NOTE: To Run the project at this point run the WebCrawlerController.java file located in the webcrawler package. I'm still working out the kinks, so for now stop the project manually when you are done. Check the various databases to view the results of your crawl.
 ```  
+
+# Front End Installation and Deployment
+
+1) [Download and Install Node.js] (https://nodejs.org/dist/v6.11.3/node-v6.11.3.pkg)
+
+2) In Terminal, navigate to the directory containing package.json (../SearchEngine/FrontEnd/searchserver/) and execute
+- npm install
+ to install all dependecies.
+ 
+ 3) Use command 'node start' to start the server.
+ 
+ 4) Open browser and navigate to localhost:3000 to interact with the front end.
 
 
 
