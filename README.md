@@ -15,13 +15,16 @@
 
 4) Run Docker and execute the following commands from within Terminal:
 
-docker pull redis
-docker pull sequenceiq/hadoop-docker:2.4.1
-docker pull kbastani/docker-neo4j:2.2.1
-docker pull kbastani/neo4j-graph-analytics:1.1.0
+- docker pull redis
+- docker pull sequenceiq/hadoop-docker:2.4.1
+- docker pull kbastani/docker-neo4j:2.2.1
+- docker pull kbastani/neo4j-graph-analytics:1.1.0
 
 # Create Redis Databases
-docker run --name redis-frontierindex -d redis
+- docker run --name redis-frontierindex -d -p 6379:6379 redis
+- docker run --name redis-docindex -d -p 6379:6380 redis
+- docker run --name redis-urlresolver -d -p 6379:6381 redis
+- docker run --name redis-titleindex -d -p 6379:6382 redis
 
 # Create HDFS
 docker run -i -t --name hdfs sequenceiq/hadoop-docker:2.4.1 /etc/bootstrap.sh -bash
@@ -30,9 +33,8 @@ docker run -i -t --name hdfs sequenceiq/hadoop-docker:2.4.1 /etc/bootstrap.sh -b
 docker run -i -t --name mazerunner --link hdfs:hdfs kbastani/neo4j-graph-analytics:1.1.0
 
 # Create Neo4j database with links to HDFS and Mazerunner
-# Replace <user> and <neo4j-path>
-# with the location to your existing Neo4j database store directory
-docker run -d -P -v /Users/<user>/<neo4j-path>/data:/opt/data --name graphdb --link mazerunner:mazerunner --link hdfs:hdfs kbastani/docker-neo4j:2.2.1
+ Replace <user> and <neo4j-path> with the location to your existing Neo4j database store directory:
+- docker run -d -P -v /Users/<user>/<neo4j-path>/data:/opt/data --name graphdb --link mazerunner:mazerunner --link hdfs:hdfs kbastani/docker-neo4j:2.2.1
 
 
 8) Run the project!
