@@ -46,9 +46,7 @@ NOTE: To Run the project at this point run the WebCrawlerController.java file lo
 
 1) [Download and Install Node.js] (https://nodejs.org/dist/v6.11.3/node-v6.11.3.pkg)
 
-2) In Terminal, navigate to the directory containing package.json (../SearchEngine/FrontEnd/searchserver/) and execute
-- npm install
- to install all dependecies.
+2) In Terminal, navigate to the directory containing package.json (../SearchEngine/FrontEnd/searchserver/) and execute the command 'npm install' to download install all dependecies.
  
  3) Use command 'node start' to start the server.
  
